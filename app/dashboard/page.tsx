@@ -9,7 +9,12 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const revenueData = [
+type RevenueItem = {
+  name: string;
+  revenue: number;
+};
+
+const revenueData: RevenueItem[] = [
   { name: "Jan", revenue: 2000 },
   { name: "Feb", revenue: 3800 },
   { name: "Mar", revenue: 3500 },
@@ -33,39 +38,27 @@ const latestInvoices = [
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-6">
-      {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-sm text-gray-500">Collected</h3>
-          <p className="text-2xl font-bold">$1,006.26</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-sm text-gray-500">Pending</h3>
-          <p className="text-2xl font-bold">$1,256.32</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-sm text-gray-500">Total Invoices</h3>
-          <p className="text-2xl font-bold">13</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-sm text-gray-500">Total Customers</h3>
-          <p className="text-2xl font-bold">6</p>
-        </div>
+    <div className="p-6 space-y-8">
+      {/* Statistik */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard label="Collected" value="$1,006.26" />
+        <StatCard label="Pending" value="$1,256.32" />
+        <StatCard label="Total Invoices" value="13" />
+        <StatCard label="Total Customers" value="6" />
       </div>
 
-      {/* Chart + Latest Invoices */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Chart */}
+      {/* Grafik & Invoice */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Revenue */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Recent Revenue</h3>
-          <div className="h-64">
+          <h2 className="text-lg font-semibold mb-4">Recent Revenue</h2>
+          <div className="w-full h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={revenueData}>
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="revenue" fill="#8884d8" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -73,20 +66,29 @@ export default function DashboardPage() {
 
         {/* Latest Invoices */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Latest Invoices</h3>
+          <h2 className="text-lg font-semibold mb-4">Latest Invoices</h2>
           <ul className="divide-y divide-gray-200">
-            {latestInvoices.map((invoice, idx) => (
-              <li key={idx} className="flex items-center justify-between py-3">
+            {latestInvoices.map((inv, idx) => (
+              <li key={idx} className="py-3 flex justify-between items-center">
                 <div>
-                  <p className="font-medium">{invoice.name}</p>
-                  <p className="text-sm text-gray-500">{invoice.email}</p>
+                  <p className="font-medium">{inv.name}</p>
+                  <p className="text-sm text-gray-500">{inv.email}</p>
                 </div>
-                <p className="font-semibold">${invoice.amount.toFixed(2)}</p>
+                <span className="font-semibold">${inv.amount.toFixed(2)}</span>
               </li>
             ))}
           </ul>
         </div>
       </div>
+    </div>
+  );
+}
+
+function StatCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-white p-4 rounded-lg shadow text-center">
+      <p className="text-sm text-gray-500">{label}</p>
+      <p className="text-xl font-bold">{value}</p>
     </div>
   );
 }
